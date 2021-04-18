@@ -118,13 +118,14 @@ namespace S4Pavir
 			list_of_mods.Items.Clear();
 			string[] folders = Directory.GetDirectories(mod_folder_path);
 			string[] mod_names = Directory.GetFiles(mod_folder_path);
-			string current_body_type = "";
+			string current_body_type;
 			List<string> new_folders = new List<string>();
 
 			Custom_Message_Box("Please wait, this can take some time. " + mod_names.Length.ToString() + " mods need to be sorted.");
 
 			foreach (string name in mod_names)
 			{
+				current_body_type = "";
 				IPackage now_open = Package.OpenPackage(0, name);
 				string only_mod_name = Regex.Match(name, regex_pattern).ToString();
 
