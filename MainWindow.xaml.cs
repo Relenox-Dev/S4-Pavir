@@ -286,6 +286,7 @@ namespace S4Pavir
 				p = Package.OpenPackage(0, names[index_of_now_selected]);
 				Fill_Image_Array(p);
 				Fill_Details(p);
+				p.Dispose();
 			}
 			catch (Exception)
 			{
