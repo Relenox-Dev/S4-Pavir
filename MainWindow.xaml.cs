@@ -124,6 +124,7 @@ namespace S4Pavir
 		private void Sort_mods()
 		{
 			list_of_mods.Items.Clear();
+			thumbnail_bitmaps.Clear();
 			string[] folders = Directory.GetDirectories(mod_folder_path);
 			string[] mod_names = Directory.GetFiles(mod_folder_path);
 			string current_body_type;
@@ -318,6 +319,7 @@ namespace S4Pavir
 			catch (Exception)
 			{
 				img_thumbnail.Source = BitmapFrame.Create(new Uri("pack://application:,,,/Clear.bmp"));
+				img_counter.Content = "1/1";
 				tb_mod_name.Text = null;
 				tb_flags.Text = null;
 				tb_age_gender.Text = null;
