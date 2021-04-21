@@ -1,4 +1,9 @@
 ﻿// Copyright (C) 2021 by Dawid Andrzejczak
+using Microsoft.VisualBasic.FileIO;
+using Ookii.Dialogs.Wpf;
+using s4pi.Interfaces;
+using s4pi.Package;
+using s4pi.WrapperDealer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,11 +12,6 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using Ookii.Dialogs.Wpf;
-using s4pi.Interfaces;
-using s4pi.Package;
-using s4pi.WrapperDealer;
-using Microsoft.VisualBasic.FileIO;
 
 namespace S4Pavir
 {
@@ -32,7 +32,8 @@ namespace S4Pavir
 			0xA1FF2FC4,
 			0xCD9DE247,
 			0xE1BCAEE2,
-			0xE254AE6E
+			0xE254AE6E,
+			0x3C2A8647
 		};
 
 		private static uint[] flags = new uint[]
@@ -126,6 +127,10 @@ namespace S4Pavir
 			foreach (string name in mod_names)
 			{
 				current_body_type = "";
+				if (!name.Contains(".package"))
+				{
+					continue;
+				}
 				IPackage now_open = Package.OpenPackage(0, name);
 				string only_mod_name = Regex.Match(name, regex_pattern).ToString();
 
@@ -299,35 +304,54 @@ namespace S4Pavir
 			}
 		}
 
-		private void Slideshow_Left_Click(object sender, RoutedEventArgs e)
+		private void Switch_Image(bool forward)
 		{
-			if (now_displayed > 0)
+			if (forward)
 			{
-				try
+				if (now_displayed < num_of_images - 1)
+				{
+					now_displayed++;
+				}
+				else
+				{
+					now_displayed = 0;
+				}
+			}
+			else
+			{
+				if (now_displayed > 0)
 				{
 					now_displayed--;
-					img_thumbnail.Source = thumbnail_bitmaps[now_displayed];
-					img_counter.Content = now_displayed + 1 + "/" + num_of_images;
 				}
-				catch (Exception)
+				else
 				{
+					now_displayed = num_of_images - 1;
 				}
+			}
+
+			img_thumbnail.Source = thumbnail_bitmaps[now_displayed];
+			img_counter.Content = now_displayed + 1 + "/" + num_of_images;
+		}
+
+		private void Slideshow_Left_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				Switch_Image(false);
+			}
+			catch (Exception)
+			{
 			}
 		}
 
 		private void Slideshow_Right_Click(object sender, RoutedEventArgs e)
 		{
-			if (now_displayed < num_of_images - 1)
+			try
 			{
-				try
-				{
-					now_displayed++;
-					img_thumbnail.Source = thumbnail_bitmaps[now_displayed];
-					img_counter.Content = now_displayed + 1 + "/" + num_of_images;
-				}
-				catch (Exception)
-				{
-				}
+				Switch_Image(true);
+			}
+			catch (Exception)
+			{
 			}
 		}
 
