@@ -1,4 +1,5 @@
 ﻿// Copyright (C) 2021 by Dawid Andrzejczak
+using CatalogResource;
 using Microsoft.VisualBasic.FileIO;
 using Ookii.Dialogs.Wpf;
 using s4pi.Interfaces;
@@ -6,6 +7,7 @@ using s4pi.Package;
 using s4pi.WrapperDealer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -39,6 +41,11 @@ namespace S4Pavir
 		private static uint[] flags = new uint[]
 		{
 			0x034AEECB
+		};
+
+		private static uint[] types = new uint[]
+		{
+			0xC0DB5AE7
 		};
 
 		public IPackage p;
@@ -229,6 +236,20 @@ namespace S4Pavir
 
 					break;
 				}
+				else if (types.Contains(r.ResourceType))
+				{
+					ObjectDefinitionResource text_file = (ObjectDefinitionResource)WrapperDealer.GetResource(1, p, r);
+
+					try
+					{
+						tb_flags.Text = text_file.Tuning.ToString();
+					}
+					catch (Exception)
+					{
+						tb_flags.Text = null;
+					}
+					break;
+				}
 
 				tb_flags.Text = null;
 				tb_age_gender.Text = null;
@@ -306,53 +327,47 @@ namespace S4Pavir
 
 		private void Switch_Image(bool forward)
 		{
-			if (forward)
+			try
 			{
-				if (now_displayed < num_of_images - 1)
+				if (forward)
 				{
-					now_displayed++;
+					if (now_displayed < num_of_images - 1)
+					{
+						now_displayed++;
+					}
+					else
+					{
+						now_displayed = 0;
+					}
 				}
 				else
 				{
-					now_displayed = 0;
+					if (now_displayed > 0)
+					{
+						now_displayed--;
+					}
+					else
+					{
+						now_displayed = num_of_images - 1;
+					}
 				}
-			}
-			else
-			{
-				if (now_displayed > 0)
-				{
-					now_displayed--;
-				}
-				else
-				{
-					now_displayed = num_of_images - 1;
-				}
-			}
 
-			img_thumbnail.Source = thumbnail_bitmaps[now_displayed];
-			img_counter.Content = now_displayed + 1 + "/" + num_of_images;
+				img_thumbnail.Source = thumbnail_bitmaps[now_displayed];
+				img_counter.Content = now_displayed + 1 + "/" + num_of_images;
+			}
+			catch (Exception)
+			{
+			}
 		}
 
 		private void Slideshow_Left_Click(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				Switch_Image(false);
-			}
-			catch (Exception)
-			{
-			}
+			Switch_Image(false);
 		}
 
 		private void Slideshow_Right_Click(object sender, RoutedEventArgs e)
 		{
-			try
-			{
-				Switch_Image(true);
-			}
-			catch (Exception)
-			{
-			}
+			Switch_Image(true);
 		}
 
 		private void About_Click(object sender, RoutedEventArgs e)
