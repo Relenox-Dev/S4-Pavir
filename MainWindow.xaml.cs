@@ -152,6 +152,12 @@ namespace S4Pavir
 
 						break;
 					}
+					else if (types.Contains(r.ResourceType))
+					{
+						current_body_type = "Objects";
+
+						break;
+					}
 				}
 
 				now_open.Dispose();
@@ -167,7 +173,6 @@ namespace S4Pavir
 					File.Move(name, mod_folder_path + "\\" + current_body_type + "\\" + only_mod_name + ".package");
 				}
 			}
-
 			Custom_Message_Box("All mods have been sorted!");
 		}
 
